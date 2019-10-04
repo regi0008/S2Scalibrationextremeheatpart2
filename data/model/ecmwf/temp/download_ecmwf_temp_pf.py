@@ -1,11 +1,5 @@
 #CODE FOR PERTURBED FORECAST
 
-import os
-
-#set these environment variables before executing the Python script
-os.environ['ECMWF_API_URL'] = "https://api.ecmwf.int/v1"
-os.environ['ECMWF_API_KEY'] = "6c37a94e116abf2d13611c4149c584c2"
-os.environ['ECMWF_API_EMAIL'] = "regineree@hotmail.com"
 #------------------------------------
 #This program downloads the ECMWF hindcast data using MARS.
 #The example is for April 2016 run for all model output that
@@ -17,11 +11,7 @@ from subprocess import call             # This library needed to make system cal
 from ecmwfapi import ECMWFDataServer    # Load the ECMWF API library
 
 #put in your key
-server = ECMWFDataServer(url="https://api.ecmwf.int/v1",
-                         key="6c37a94e116abf2d13611c4149c584c2",
-                         email="regineree@hotmail.com")
-#or
-#server = ECMWFService("mars", url="https://api.ecmwf.int/v1",key="6c37a94e116abf
+server = ECMWFDataServer()
 
 # Define data folder, and create it
 dest_dir = 'C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp/'
