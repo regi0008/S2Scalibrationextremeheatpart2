@@ -96,7 +96,8 @@ for i_date in range(0,len(str(init_date))):
     
     # temp_number[-1] = 10
     # Append another "member" by taking the last one and adding 1 since arr_comb will have one more member from ds_cf
-    # Without this step, error message shows ValueError: cannot reshape array of size 169400 (20 x 11 x 22 x 35) into shape (20,10,22,35)
+    # Without this step, error message shows
+    #ValueError: cannot reshape array of size 169400 (20 x 11 x 22 x 35) into shape (20,10,22,35)
     temp_number = np.append(temp_number, temp_number[-1]+1)
     
     # Read in the array from pf's sfctemp ('t2m') variable
@@ -140,6 +141,7 @@ for i_date in range(0,len(str(init_date))):
         #print on console (arr_wkly.shape), it shows (20,11,22,35)
         
         #when we split temp_st array into four equal parts, each week is allocated 144 hours.
+        #e.g. i = 0, this_weeks_st = temp_st[6] - temp_st[0] = 144
         this_weeks_st = temp_st[i*7+7-1] - temp_st[i*7]
         
         #(time,member,lat,lon)
