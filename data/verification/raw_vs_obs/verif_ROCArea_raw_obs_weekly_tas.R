@@ -143,8 +143,8 @@ grepAndMatch <- function(x, table) {
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
-fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160328_week1.nc"), "tas")
-obs <- loadNcdf(file.path(dir_2, "era5_tas_20160328_week1.nc"), "tas")
+fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160425_week1.nc"), "tas")
+obs <- loadNcdf(file.path(dir_2, "era5_tas_20160425_week1.nc"), "tas")
 
 ###################################################################
 
@@ -179,7 +179,7 @@ str(upper.tercile)
 #            main = "ROC AREA (Above-normal)",
 #            color.theme = "YlOrRd")
 
-fcst_fileName <- "raw_ROCA_AN_20160328_week1.nc"
+fcst_fileName <- "raw_ROCA_AN_20160425_week1.nc"
 writeNcdf_verf(upper.tercile, fcst_fileName)
 #--------------------------------------------------
 # NEAR NORMAL TERCILE
@@ -197,5 +197,5 @@ lower.tercile <- easyVeri2grid(easyVeri.mat = roc$cat1,
                                verifun = "EnsRoca")
 str(lower.tercile)
 
-fcst_fileName <- "raw_ROCA_BN_20160328_week1.nc"
+fcst_fileName <- "raw_ROCA_BN_20160425_week1.nc"
 writeNcdf_verf(lower.tercile, fcst_fileName)
