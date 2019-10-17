@@ -193,3 +193,33 @@ fcst_cal_fileName <- "fcst_cal_LR_20160425_week4.nc"
 writeNcdf(fcst_cal, fcst_cal_fileName)
 
 ###################################################################
+
+#FAST AND CONVENIENT BUT CAN'T RUN DUE TO SPLIT STRING IN FILE.PATH
+dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
+dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
+
+## All the initial dates with complete 7-day week in Mar-April-May for the 2016 runs
+#init_date <- c('0328', '0331', '0404', '0407', '0411', '0414', '0418', '0421', '0425')
+
+init_date <- '0411'
+
+week_no <- c(1,2,3,4) #week 1: week_no[1], week 2: week_no[2] etc.
+
+#alternative version: lapply function
+#for (i_date in range(0,length(init_date)))
+for (i in week_no){
+  
+  print(paste("For Week", i))
+  
+  fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_2016" + init_date + "_week" + week_no[i] + ".nc"), "tas")
+  obs <- loadNcdf(file.path(dir_2, "era5_tas_2016" + init_date + "_week" + week_no[i] + ".nc"), "tas")
+  #fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160411_week1.nc"), "tas")
+  #obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1.nc"), "tas")
+  #apply calibraton
+  #change method here accordingly: calMVA, calCCR,calLR
+  fcst_cal <- calMVA(fcst, obs, crossval = TRUE)
+  
+  fcst_cal_fileName <- "fcst_cal_MVA_" + init_date + "_week" + week_no + ".nc"
+  #fcst_cal_fileName <- "fcst_cal_MVA_20160411_week1.nc"
+  writeNcdf(fcst_cal, fcst_cal_fileName)
+}
