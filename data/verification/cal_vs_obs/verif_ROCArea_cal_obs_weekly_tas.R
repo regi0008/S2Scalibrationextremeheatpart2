@@ -138,13 +138,13 @@ grepAndMatch <- function(x, table) {
 ###################################################################
 #LOADING OF FILES FOR RAW HINDCAST AND OBSERVATIONS
 
-#test for one calibration method (MVA), one particular week and one initialized date first!
+#test for one calibration method, one particular week and one initialized date first!
 
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/calibrated_weekly_temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
-fcst_cal <- loadNcdf(file.path(dir_1, "fcst_cal_MVA_20160328_week1.nc"), "tas")
-obs <- loadNcdf(file.path(dir_2, "era5_tas_20160328_week1.nc"), "tas")
+fcst_cal <- loadNcdf(file.path(dir_1, "fcst_cal_MVA_20160411_week1.nc"), "tas")
+obs <- loadNcdf(file.path(dir_2, "era5_tas_20160425_week1.nc"), "tas")
 
 ###################################################################
 
@@ -179,7 +179,7 @@ str(upper.tercile)
 #            main = "ROC AREA (Above-normal)",
 #            color.theme = "YlOrRd")
 
-fcst_fileName <- "cal_ROCA_AN_20160328_week1.nc"
+fcst_fileName <- "cal_MVA_ROCA_AN_20160411_week1.nc"
 writeNcdf_verf(upper.tercile, fcst_fileName)
 #--------------------------------------------------
 # NEAR NORMAL TERCILE
@@ -188,7 +188,7 @@ writeNcdf_verf(upper.tercile, fcst_fileName)
 #                               verifun = "EnsRoca")
 #str(middle.tercile)
 
-#fcst_fileName <- "cal_ROCA_NN_2016" + init_date + "_week" + week_no + ".nc"
+#fcst_fileName <- "cal_" + method + "_ROCA_NN_2016" + init_date + "_week" + week_no + ".nc"
 #writeNcdf_verf(middle.tercile, fcst_fileName)
 #--------------------------------------------------
 # BELOW NORMAL TERCILE
@@ -197,5 +197,5 @@ lower.tercile <- easyVeri2grid(easyVeri.mat = roc$cat1,
                                verifun = "EnsRoca")
 str(lower.tercile)
 
-fcst_fileName <- "cal_ROCA_BN_20160328_week1.nc"
+fcst_fileName <- "cal_MVA_ROCA_BN_20160411_week1.nc"
 writeNcdf_verf(lower.tercile, fcst_fileName)
