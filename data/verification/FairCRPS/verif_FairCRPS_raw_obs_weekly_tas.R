@@ -177,7 +177,7 @@ names(dim(lat)) <- 'lat'
 
 faircrps_fcst_raw_fileName <- "raw_FairCrps_20160328_week1.nc"
 #ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
-ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
+ArrayToNetCDF(list(calculate_crps_fcst_raw, lat, lon), faircrps_fcst_raw_fileName)
 ###################################################################
 
 #COMPUTE FAIR CONTINUOUS RANKED PROBABILITY SCORE (FairCRPS)
