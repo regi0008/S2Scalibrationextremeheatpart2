@@ -160,6 +160,7 @@ calculate_crps_fcst_raw <- veriApply(verifun = "FairCrps",
 #Output array calculate_crps_fcst_raw to netcdf file
 metadata <- list(calculate_crps_fcst_raw = list(units = 'unit'))
 attr(calculate_crps_fcst_raw, 'variables') <- metadata
+#names(dim(calculate_crps_fcst_raw)) <- c('lon', 'lat', 'time')
 names(dim(calculate_crps_fcst_raw)) <- c('time', 'lat', 'lon')
 
 lon <- seq(90, 141)
@@ -175,6 +176,21 @@ attr(lat, 'variables') <- metadata
 names(dim(lat)) <- 'lat'
 
 faircrps_fcst_raw_fileName <- "raw_FairCrps_20160328_week1.nc"
-ArrayToNetCDF(list(calculate_crps_fcst_raw, lat, lon), faircrps_fcst_raw_fileName)
+#ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
+ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
 ###################################################################
 
+#COMPUTE FAIR CONTINUOUS RANKED PROBABILITY SCORE (FairCRPS)
+
+#calculate_crps_fcst_raw <- veriApply(verifun = "FairCrps",
+#                                     fcst = fcst$Data,
+#                                     obs = obs$Data,
+#                                     tdim = 2,
+#                                     ensdim = 1)
+
+#faircrps_fcst_raw_fileName <- easyVeri2grid(easyVeri.mat = calculate_crps_fcst_raw,
+#                                            obs.grid = obs,
+#                                            verifun = "FairCrps")
+
+#faircrps_fcst_raw_fileName <- "raw_FairCrps_20160328_week1.nc"
+#writeNcdf_verf(calculate_crps_fcst_raw, faircrps_fcst_raw_fileName)
