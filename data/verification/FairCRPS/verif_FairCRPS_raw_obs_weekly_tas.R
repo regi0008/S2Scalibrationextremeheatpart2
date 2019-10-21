@@ -148,7 +148,7 @@ grepAndMatch <- function(x, table) {
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
-#files are formatted to (member, time, lat, lon)
+#files are formatted to (member, time, lat, lon) for CRPS
 fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160328_week1_format.nc"), "tas")
 obs <- loadNcdf(file.path(dir_2, "era5_tas_20160328_week1_format.nc"), "tas")
 
@@ -166,13 +166,13 @@ metadata <- list(calculate_crps_fcst_raw = list(units = 'unit'))
 attr(calculate_crps_fcst_raw, 'variables') <- metadata
 names(dim(calculate_crps_fcst_raw)) <- c('lon', 'lat', 'time')
 
-lon <- seq(90, 141)
+lon <- seq(90, 141, 1.5)
 dim(lon) <- length(lon)
 metadata <- list(lon = list(units = 'degrees_east'))
 attr(lon, 'variables') <- metadata
 names(dim(lon)) <- 'lon'
 
-lat <- seq(-10.5, 21)
+lat <- seq(-10.5, 21, 1.5)
 dim(lat) <- length(lat)
 metadata <- list(lat = list(units = 'degrees_north'))
 attr(lat, 'variables') <- metadata
