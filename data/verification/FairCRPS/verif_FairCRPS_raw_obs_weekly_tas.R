@@ -25,6 +25,8 @@ loadNcdf <- function(filePath, varname, tz = 'GMT', ...) {
   
   # Only deals with the most common dimensions, futher dimensions will be added in future.
   dimIndex <- grepAndMatch(c('lon', 'lat', 'time', 'member'), dimNames)
+  #dimIndex <- grepAndMatch(c('member', 'time', 'lat', 'lon'), dimNames)
+  
   print(dimIndex)
   if (length(dimIndex) < 3) stop('Your file has less than 3 dimensions.')
   
@@ -94,10 +96,11 @@ writeNcdf_verf <- function(gridData, filePath, missingValue = 1e20, tz = 'GMT', 
   
   #---------------------------------------  
   # default list
-  dimList <- list(dimLat, dimLon)
+  dimList <- list(dimLon, dimLat)
   
   # In order to keep the dim list exactly the same with the original one, it needs to be changed.
-  dimIndex <- grepAndMatch(c('lat', 'lon', 'time'), attributes(gridData$Data)$dimensions)
+  #dimIndex <- grepAndMatch(c('lat', 'lon', 'time'), attributes(gridData$Data)$dimensions)
+  dimIndex <- grepAndMatch(c('lon', 'lat', 'time'), attributes(gridData$Data)$dimensions)
   #---------------------------------------  
   # Then defines data
   var <- ncvar_def(name, "units", dimList, missingValue)
