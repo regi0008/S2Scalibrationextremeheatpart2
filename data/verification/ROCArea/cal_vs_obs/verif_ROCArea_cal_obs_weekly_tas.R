@@ -136,7 +136,7 @@ grepAndMatch <- function(x, table) {
 }
 
 ###################################################################
-#LOADING OF FILES FOR RAW HINDCAST AND OBSERVATIONS
+#LOADING OF FILES FOR CALIBRATED HINDCAST AND OBSERVATIONS
 
 #test for one calibration method, one particular week and one initialized date first!
 
