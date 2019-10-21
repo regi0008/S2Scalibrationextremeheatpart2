@@ -25,6 +25,7 @@ loadNcdf <- function(filePath, varname, tz = 'GMT', ...) {
   
   # Only deals with the most common dimensions, futher dimensions will be added in future.
   dimIndex <- grepAndMatch(c('lon', 'lat', 'time', 'member'), dimNames)
+  #dimIndex <- grepAndMatch(c('member', 'time', 'lat', 'lon'), dimNames)
   print(dimIndex)
   if (length(dimIndex) < 3) stop('Your file has less than 3 dimensions.')
   
@@ -94,10 +95,13 @@ writeNcdf_verf <- function(gridData, filePath, missingValue = 1e20, tz = 'GMT', 
   
   #---------------------------------------  
   # default list
-  dimList <- list(dimLat, dimLon)
+  #dimList <- list(dimLat, dimLon)
+  #dimList <- list(dimLon, dimLat, dimTime)
+  dimList <- list(dimTime, dimLat, dimLon)
   
   # In order to keep the dim list exactly the same with the original one, it needs to be changed.
-  dimIndex <- grepAndMatch(c('lat', 'lon', 'time'), attributes(gridData$Data)$dimensions)
+  #dimIndex <- grepAndMatch(c('lat', 'lon', 'time'), attributes(gridData$Data)$dimensions)
+  dimIndex <- grepAndMatch(c('time', 'lat', 'lon'), attributes(gridData$Data)$dimensions)
   #---------------------------------------  
   # Then defines data
   var <- ncvar_def(name, "units", dimList, missingValue)
@@ -176,21 +180,6 @@ attr(lat, 'variables') <- metadata
 names(dim(lat)) <- 'lat'
 
 faircrps_fcst_raw_fileName <- "raw_FairCrps_20160328_week1.nc"
-#ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
-ArrayToNetCDF(list(calculate_crps_fcst_raw, lat, lon), faircrps_fcst_raw_fileName)
+ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
+#ArrayToNetCDF(list(calculate_crps_fcst_raw, lat, lon), faircrps_fcst_raw_fileName)
 ###################################################################
-
-#COMPUTE FAIR CONTINUOUS RANKED PROBABILITY SCORE (FairCRPS)
-
-#calculate_crps_fcst_raw <- veriApply(verifun = "FairCrps",
-#                                     fcst = fcst$Data,
-#                                     obs = obs$Data,
-#                                     tdim = 2,
-#                                     ensdim = 1)
-
-#faircrps_fcst_raw_fileName <- easyVeri2grid(easyVeri.mat = calculate_crps_fcst_raw,
-#                                            obs.grid = obs,
-#                                            verifun = "FairCrps")
-
-#faircrps_fcst_raw_fileName <- "raw_FairCrps_20160328_week1.nc"
-#writeNcdf_verf(calculate_crps_fcst_raw, faircrps_fcst_raw_fileName)
