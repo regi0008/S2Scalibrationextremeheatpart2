@@ -149,8 +149,8 @@ dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
 #files are formatted to (member, time, lat, lon) for CRPS
-fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160328_week1_format.nc"), "tas")
-obs <- loadNcdf(file.path(dir_2, "era5_tas_20160328_week1_format.nc"), "tas")
+fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160411_week1_format.nc"), "tas")
+obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1_format.nc"), "tas")
 
 ###################################################################
 #COMPUTE FAIR CONTINUOUS RANKED PROBABILITY SCORE (FairCRPS)
@@ -178,7 +178,7 @@ metadata <- list(lat = list(units = 'degrees_north'))
 attr(lat, 'variables') <- metadata
 names(dim(lat)) <- 'lat'
 
-faircrps_fcst_raw_fileName <- "raw_FairCrps_20160328_week1.nc"
+faircrps_fcst_raw_fileName <- "raw_FairCrps_20160411_week1.nc"
 #ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
 ArrayToNetCDF(list(calculate_crps_fcst_raw, lat, lon), faircrps_fcst_raw_fileName)
 ###################################################################
