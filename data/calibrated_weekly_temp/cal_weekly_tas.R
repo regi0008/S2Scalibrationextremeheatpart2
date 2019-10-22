@@ -1,4 +1,4 @@
-#library(loadeR)
+library(loadeR)
 library(downscaleR)
 library(transformeR)
 library(visualizeR)
@@ -20,7 +20,7 @@ loadNcdf <- function(filePath, varname, tz = 'GMT', ...) {
   dimNames <- unlist(lapply(1:length(var$dim), function(x) var$dim[[x]]$name))
   print(dimNames)
   
-  # Only deals with the most common dimensions, further dimensions will be added in future.
+  # Only deals with the most common dimensions, futher dimensions will be added in future.
   dimIndex <- grepAndMatch(c('lon', 'lat', 'time', 'member'), dimNames)
   print(dimIndex)
   if (length(dimIndex) < 3) stop('Your file has less than 3 dimensions.')
@@ -106,12 +106,12 @@ writeNcdf <- function(gridData, filePath, missingValue = 1e20, tz = 'GMT', units
   
   # Depending on whether there is a member part of the dataset.
   # default list
-  #dimList <- list(dimLon, dimLat, dimTime, dimMem)
-  dimList <- list(dimMem, dimTime, dimLat, dimLon)
+  dimList <- list(dimLon, dimLat, dimTime, dimMem)
+  #dimList <- list(dimMem, dimTime, dimLat, dimLon)
   
   # In order to keep the dim list exactly the same with the original one, it needs to be changed.
-  #dimIndex <- grepAndMatch(c('lon','lat','time','member'), attributes(gridData$Data)$dimensions)
-  dimIndex <- grepAndMatch(c('member','time','lat','lon'), attributes(gridData$Data)$dimensions)
+  dimIndex <- grepAndMatch(c('lon','lat','time','member'), attributes(gridData$Data)$dimensions)
+  #dimIndex <- grepAndMatch(c('member','time','lat','lon'), attributes(gridData$Data)$dimensions)
   dimIndex <- na.omit(dimIndex)
   
   # delete the NULL list, in order that there is no member part in the data.
@@ -192,4 +192,35 @@ fcst_cal <- calMVA(fcst, obs, crossval = TRUE)
 fcst_cal_fileName <- "fcst_cal_MVA_20160328_week1.nc"
 writeNcdf(fcst_cal, fcst_cal_fileName)
 
+###################################################################
+
+#FAST AND CONVENIENT BUT CAN'T RUN DUE TO SPLIT STRING IN FILE.PATH
+#dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
+#dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
+
+## All the initial dates with complete 7-day week in Mar-April-May for the 2016 runs
+#init_date <- c('0328', '0331', '0404', '0407', '0411', '0414', '0418', '0421', '0425')
+
+#init_date <- '0411'
+
+#week_no <- c(1,2,3,4) #week 1: week_no[1], week 2: week_no[2] etc.
+
+#alternative version: lapply function
+#for (i_date in range(0,length(init_date)))
+#for (i in week_no){
+  
+#  print(paste("For Week", i))
+  
+#  fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_2016" + init_date + "_week" + week_no[i] + ".nc"), "tas")
+#  obs <- loadNcdf(file.path(dir_2, "era5_tas_2016" + init_date + "_week" + week_no[i] + ".nc"), "tas")
+  #fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160411_week1.nc"), "tas")
+  #obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1.nc"), "tas")
+  #apply calibraton
+  #change method here accordingly: calMVA, calCCR,calLR
+#  fcst_cal <- calMVA(fcst, obs, crossval = TRUE)
+  
+#  fcst_cal_fileName <- "fcst_cal_MVA_" + init_date + "_week" + week_no + ".nc"
+  #fcst_cal_fileName <- "fcst_cal_MVA_20160411_week1.nc"
+#  writeNcdf(fcst_cal, fcst_cal_fileName)
+#}
 ###################################################################
