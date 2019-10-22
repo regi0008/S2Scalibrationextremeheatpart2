@@ -183,18 +183,18 @@ grepAndMatch <- function(x, table) {
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
-fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160328_week1.nc"), "tas")
-obs <- loadNcdf(file.path(dir_2, "era5_tas_20160328_week1.nc"), "tas")
+fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160411_week1.nc"), "tas")
+obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1.nc"), "tas")
 
 #apply calibraton
 #change method here accordingly: calMVA, calCCR,calLM (LM = LR, the linear reg. method)
-fcst_cal <- calMVA(fcst, obs, crossval = TRUE)
-fcst_cal_fileName <- "fcst_cal_MVA_20160328_week1.nc"
+fcst_cal <- calLM(fcst, obs, crossval = TRUE)
+fcst_cal_fileName <- "fcst_cal_LR_20160411_week1.nc"
 writeNcdf(fcst_cal, fcst_cal_fileName)
 
 ###################################################################
 
-#FAST AND CONVENIENT BUT CAN'T RUN DUE TO SPLIT STRING IN FILE.PATH
+#CAN'T RUN DUE TO SPLIT STRING IN FILE.PATH
 #dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
 #dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
@@ -223,4 +223,3 @@ writeNcdf(fcst_cal, fcst_cal_fileName)
   #fcst_cal_fileName <- "fcst_cal_MVA_20160411_week1.nc"
 #  writeNcdf(fcst_cal, fcst_cal_fileName)
 #}
-###################################################################
