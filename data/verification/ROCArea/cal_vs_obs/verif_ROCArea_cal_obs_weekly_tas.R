@@ -1,13 +1,15 @@
-library(calibratoR)
 library(downscaleR)
 library(transformeR)
 library(visualizeR)
+library(calibratoR)
 library(ncdf4)
 library(abind)
+library(s2dverification)
+library(SpecsVerification)
 library(easyVerification)
+library(verification)
 library(RColorBrewer)
 
-########## USE HYFO PACKAGE ##########
 loadNcdf <- function(filePath, varname, tz = 'GMT', ...) {
   nc <- nc_open(filePath)
   var <- nc$var
@@ -137,14 +139,15 @@ grepAndMatch <- function(x, table) {
 
 ###################################################################
 #LOADING OF FILES FOR CALIBRATED HINDCAST AND OBSERVATIONS
-
-#test for one calibration method, one particular week and one initialized date first!
+#need to make sure dimensions of both files are the same:
+#calibrated re-forecast: member, time, lat, lon
+#obs_formatted: time, lat, lon
 
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/calibrated_weekly_temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
 fcst_cal <- loadNcdf(file.path(dir_1, "fcst_cal_MVA_20160411_week1.nc"), "tas")
-obs <- loadNcdf(file.path(dir_2, "era5_tas_20160425_week1.nc"), "tas")
+obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1_format.nc"), "tas")
 
 ###################################################################
 
@@ -153,22 +156,24 @@ obs <- loadNcdf(file.path(dir_2, "era5_tas_20160425_week1.nc"), "tas")
 #compute area under the ROC Curve via easyVerification package.
 #EnsRoca computes the area under the ROC curve given the observations.
 #tercile probabilities: let prob = 1:2/3
-#need to state tdim = index of dimension with the different forecasts (fcst date index) = 2
-#need to state ensdim = index of dimension with the different ensemble members (fcst member index) = 1
+#need to state tdim = index of dimension with the different forecasts (fcst date index) = 3
+#need to state ensdim = index of dimension with the different ensemble members (fcst member index) = 4
 #how to check: print out dim(fcst$Data), check the index positions for time and members
 roc <- veriApply(verifun = "EnsRoca",
                  fcst = fcst_cal$Data,
                  obs = obs$Data,
-                 prob = 1:2/3,
-                 tdim = 2,
-                 ensdim = 1)
+                 prob = 1:2/3)
 
+#ERROR MESSAGE FROM THIS LINE BELOW:
+#"Error in easyVeri2grid(easyVeri.mat = roc$cat3, obs.grid = obs, verifun = "EnsRoca") : 
+#XY coordinates and matrix dimensions do not match"
+#Dimension problem. To tackle above message, transpose roc$(whatever category)
 # plot ROC AREA for each tercile category.
 # obs.grid = the grid containing the verifying reference used.
 # easyVeri2grid returns a climatological grid.
 
 # ABOVE NORMAL TERCILE
-upper.tercile <- easyVeri2grid(easyVeri.mat = roc$cat3,
+upper.tercile <- easyVeri2grid(easyVeri.mat = t(roc$cat3),
                                obs.grid = obs,
                                verifun = "EnsRoca")
 str(upper.tercile)
@@ -183,7 +188,7 @@ fcst_fileName <- "cal_MVA_ROCA_AN_20160411_week1.nc"
 writeNcdf_verf(upper.tercile, fcst_fileName)
 #--------------------------------------------------
 # NEAR NORMAL TERCILE
-#middle.tercile <- easyVeri2grid(easyVeri.mat = roc$cat2,
+#middle.tercile <- easyVeri2grid(easyVeri.mat = t(roc$cat2),
 #                               obs.grid = obs,
 #                               verifun = "EnsRoca")
 #str(middle.tercile)
@@ -192,7 +197,7 @@ writeNcdf_verf(upper.tercile, fcst_fileName)
 #writeNcdf_verf(middle.tercile, fcst_fileName)
 #--------------------------------------------------
 # BELOW NORMAL TERCILE
-lower.tercile <- easyVeri2grid(easyVeri.mat = roc$cat1,
+lower.tercile <- easyVeri2grid(easyVeri.mat = t(roc$cat1),
                                obs.grid = obs,
                                verifun = "EnsRoca")
 str(lower.tercile)
