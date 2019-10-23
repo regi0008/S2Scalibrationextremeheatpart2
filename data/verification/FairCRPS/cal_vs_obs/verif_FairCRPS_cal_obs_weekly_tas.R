@@ -26,7 +26,6 @@ loadNcdf <- function(filePath, varname, tz = 'GMT', ...) {
   # Only deals with the most common dimensions, futher dimensions will be added in future.
   dimIndex <- grepAndMatch(c('lon', 'lat', 'time', 'member'), dimNames)
   #dimIndex <- grepAndMatch(c('member', 'time', 'lat', 'lon'), dimNames)
-  
   print(dimIndex)
   if (length(dimIndex) < 3) stop('Your file has less than 3 dimensions.')
   
@@ -85,51 +84,6 @@ loadNcdf <- function(filePath, varname, tz = 'GMT', ...) {
   
 }
 
-writeNcdf_verf <- function(gridData, filePath, missingValue = 1e20, tz = 'GMT', units = NULL, version = 3) {
-  
-  name <- gridData$Variable$varName
-  # First defines dimensions.
-  dimLon <- ncdim_def('lon', 'degrees_east', gridData$xyCoords$x)
-  dimLat <- ncdim_def('lat', 'degrees_north', gridData$xyCoords$y)
-  dimMem <- NULL
-  dimTime <- NULL
-  
-  #---------------------------------------  
-  # default list
-  dimList <- list(dimLon, dimLat)
-  
-  # In order to keep the dim list exactly the same with the original one, it needs to be changed.
-  #dimIndex <- grepAndMatch(c('lat', 'lon', 'time'), attributes(gridData$Data)$dimensions)
-  dimIndex <- grepAndMatch(c('lon', 'lat', 'time'), attributes(gridData$Data)$dimensions)
-  #---------------------------------------  
-  # Then defines data
-  var <- ncvar_def(name, "units", dimList, missingValue)
-  
-  # Here for ncdf4, there is an option to create version 4 ncdf, in future, it
-  # may added here.
-  if (version == 3) {
-    nc <- nc_create(filePath, var) 
-  } else if (version == 4) {
-    nc <- nc_create(filePath, var, force_v4 = TRUE)
-  } else {
-    stop("Which ncdf version you want? Only 3 and 4 can be selected!")
-  }
-  
-  ncatt_put(nc, 'lat', "standard_name","latitude")
-  ncatt_put(nc, 'lat', "_CoordinateAxisType","Lat")
-  ncatt_put(nc, 'lon', "standard_name","longitude")
-  ncatt_put(nc, 'lon', "_CoordinateAxisType","Lon")
-  
-  # This part has to be put
-  ncatt_put(nc, 0, "Conventions","CF-1.4")
-  ncatt_put(nc, 0, 'WrittenBy', 'CCRS SSP Team, adapted from hyfo package')
-  
-  data <- aperm(gridData$Data, dimIndex)
-  ncvar_put(nc, name, data)
-  nc_close(nc)
-  
-}
-
 # in order to first grep than match.
 # match only provides for exactly match, 
 # dimIndex <- grepAndMatch(c('lon', 'lat', 'time', 'member'), dimNames)
@@ -148,23 +102,24 @@ grepAndMatch <- function(x, table) {
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/calibrated_weekly_temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
-#files are formatted to (member, time, lat, lon) for CRPS
-fcst <- loadNcdf(file.path(dir_1, "fcst_cal_CCR_20160328_week1.nc"), "tas")
-obs <- loadNcdf(file.path(dir_2, "era5_tas_20160328_week1_format.nc"), "tas")
+#fcst_cal is in format: (member : time : lat : lon)
+#obs is in format: (time : lat : lon)
+fcst_cal <- loadNcdf(file.path(dir_1, "fcst_cal_MVA_20160411_week1.nc"), "tas")
+obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1_format.nc"), "tas")
 
 ###################################################################
 #COMPUTE FAIR CONTINUOUS RANKED PROBABILITY SCORE (FairCRPS)
 
-calculate_crps_fcst_raw <- veriApply(verifun = "FairCrps",
-                                     fcst = fcst$Data,
+calculate_crps_fcst_cal <- veriApply(verifun = "FairCrps",
+                                     fcst = fcst_cal$Data,
                                      obs = obs$Data,
-                                     tdim = 2,
-                                     ensdim = 1)
+                                     tdim = 3,
+                                     ensdim = 4)
 
-#Output array calculate_crps_fcst_raw to netcdf file
-metadata <- list(calculate_crps_fcst_raw = list(units = 'unit'))
-attr(calculate_crps_fcst_raw, 'variables') <- metadata
-names(dim(calculate_crps_fcst_raw)) <- c('lon', 'lat', 'time')
+#Output array calculate_crps_fcst_cal to netcdf file
+metadata <- list(calculate_crps_fcst_cal = list(units = 'unit'))
+attr(calculate_crps_fcst_cal, 'variables') <- metadata
+names(dim(calculate_crps_fcst_cal)) <- c('lon', 'lat', 'time')
 
 lon <- seq(90, 141, 1.5)
 dim(lon) <- length(lon)
@@ -178,7 +133,7 @@ metadata <- list(lat = list(units = 'degrees_north'))
 attr(lat, 'variables') <- metadata
 names(dim(lat)) <- 'lat'
 
-faircrps_fcst_raw_fileName <- "raw_FairCrps_20160328_week1.nc"
-#ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_raw), faircrps_fcst_raw_fileName)
-ArrayToNetCDF(list(calculate_crps_fcst_raw, lat, lon), faircrps_fcst_raw_fileName)
+faircrps_fcst_cal_fileName <- "cal_MVA_FairCrps_20160411_week1.nc"
+#ArrayToNetCDF(list(lon, lat, calculate_crps_fcst_cal), faircrps_fcst_cal_fileName)
+ArrayToNetCDF(list(calculate_crps_fcst_cal, lat, lon), faircrps_fcst_cal_fileName)
 ###################################################################
