@@ -143,8 +143,8 @@ grepAndMatch <- function(x, table) {
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
 
-fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160425_week4.nc"), "tas")
-obs <- loadNcdf(file.path(dir_2, "era5_tas_20160425_week4.nc"), "tas")
+fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160411_week1_format.nc"), "tas")
+obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1_format.nc"), "tas")
 
 ###################################################################
 
@@ -159,16 +159,14 @@ obs <- loadNcdf(file.path(dir_2, "era5_tas_20160425_week4.nc"), "tas")
 roc <- veriApply(verifun = "EnsRoca",
                  fcst = fcst$Data,
                  obs = obs$Data,
-                 prob = 1:2/3,
-                 tdim = 2,
-                 ensdim = 1)
+                 prob = 1:2/3)
 
 # plot ROC AREA for each tercile category.
 # obs.grid = the grid containing the verifying reference used.
 # easyVeri2grid returns a climatological grid.
 
 # ABOVE NORMAL TERCILE
-upper.tercile <- easyVeri2grid(easyVeri.mat = roc$cat3,
+upper.tercile <- easyVeri2grid(easyVeri.mat = t(roc$cat3),
                                obs.grid = obs,
                                verifun = "EnsRoca")
 str(upper.tercile)
@@ -179,11 +177,11 @@ str(upper.tercile)
 #            main = "ROC AREA (Above-normal)",
 #            color.theme = "YlOrRd")
 
-fcst_fileName <- "raw_ROCA_AN_20160425_week4.nc"
+fcst_fileName <- "raw_ROCA_AN_20160411_week1.nc"
 writeNcdf_verf(upper.tercile, fcst_fileName)
 #--------------------------------------------------
 # NEAR NORMAL TERCILE
-#middle.tercile <- easyVeri2grid(easyVeri.mat = roc$cat2,
+#middle.tercile <- easyVeri2grid(easyVeri.mat = t(roc$cat2),
 #                               obs.grid = obs,
 #                               verifun = "EnsRoca")
 #str(middle.tercile)
@@ -192,10 +190,10 @@ writeNcdf_verf(upper.tercile, fcst_fileName)
 #writeNcdf_verf(middle.tercile, fcst_fileName)
 #--------------------------------------------------
 # BELOW NORMAL TERCILE
-lower.tercile <- easyVeri2grid(easyVeri.mat = roc$cat1,
+lower.tercile <- easyVeri2grid(easyVeri.mat = t(roc$cat1),
                                obs.grid = obs,
                                verifun = "EnsRoca")
 str(lower.tercile)
 
-fcst_fileName <- "raw_ROCA_BN_20160425_week4.nc"
+fcst_fileName <- "raw_ROCA_BN_20160411_week1.nc"
 writeNcdf_verf(lower.tercile, fcst_fileName)
