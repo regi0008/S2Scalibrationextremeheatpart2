@@ -142,7 +142,8 @@ grepAndMatch <- function(x, table) {
 #test for one date and one particular week first!
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/model/ecmwf/temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
-
+#fcst need to be in (member : time : lat : lon) format
+#obs need to be in (time :  lat : lon) format
 fcst <- loadNcdf(file.path(dir_1, "ecmwf_tas_20160411_week1_format.nc"), "tas")
 obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1_format.nc"), "tas")
 
