@@ -140,12 +140,12 @@ grepAndMatch <- function(x, table) {
 ###################################################################
 #LOADING OF FILES FOR CALIBRATED HINDCAST AND OBSERVATIONS
 #need to make sure dimensions of both files are the same:
-#calibrated re-forecast: member, time, lat, lon
-#obs_formatted: time, lat, lon
+#calibrated fcst need to be in (member : time : lat : lon) format
+#obs need to be in (time :  lat : lon) format
 
 dir_1 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/calibrated_weekly_temp"
 dir_2 <- "C:/Users/regin/Desktop/S2Scalibrationextremeheatpart2/data/obs"
-
+#change method of calibration accordingly when getting data: MVA, CCR, LR
 fcst_cal <- loadNcdf(file.path(dir_1, "fcst_cal_MVA_20160411_week1.nc"), "tas")
 obs <- loadNcdf(file.path(dir_2, "era5_tas_20160411_week1_format.nc"), "tas")
 
